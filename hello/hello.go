@@ -21,6 +21,11 @@ func main() {
 	fmt.Printf("Rand float is = %f\n", rand.Float64())
 	fmt.Printf("PI is = %f\n", math.Pi)
 	fmt.Printf("%d + %d = %d\n", 5, 3, add(5, 3))
-	a, b := swap("a", "b")
+	a, b := swap("a", "b");
+	var sum, i int64;
+	for i = 0; i < 5; i++ {
+		sum += i;
+	}
+	fmt.Println(sum);
 	fmt.Println(a, " ", b);
 }
