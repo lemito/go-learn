@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	// "go/hello/contacts" должно экспортироваться
+	// "contacts" // должно экспортироваться
 	"math"
 )
 
