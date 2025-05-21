@@ -72,7 +72,7 @@ func (db *Database) Insert(for_ins User) error {
 
 	db.buffer = append(db.buffer, for_ins)
 	if len(db.buffer) == cap(db.buffer) {
-		err := db.flush()
+		err := db.Flush()
 		if err != nil {
 			return err
 		}
@@ -100,7 +100,7 @@ func (db *Database) Close() error {
 		db.sql.Close()
 	}()
 
-	err := db.flush()
+	err := db.Flush()
 	if err != nil {
 		return err
 	}
