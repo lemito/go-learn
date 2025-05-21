@@ -10,8 +10,8 @@ import (
 )
 
 type User struct {
-	name string
-	id   uint32
+	name string `json:"id"`
+	id   uint32 `json:"name"`
 }
 
 type Database struct {
@@ -23,7 +23,7 @@ type Database struct {
 func CreateDb(path string) (*Database, error) {
 	db, err := sql.Open("sqlite3", path)
 	if err != nil {
-		return nil, fmt.Errorf("open error: %w", err) 
+		return nil, fmt.Errorf("open error: %w", err)
 	}
 
 	_, err = db.Exec("CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY, name VARCHAR(32))")
@@ -89,6 +89,28 @@ func (db *Database) Get_from_id(id uint32) (*User, error) {
 
 	if err != nil {
 		return nil, err
+	}
+
+	return &res, nil
+}
+
+func (db *Database) Get_all() (*[]User, error) {
+	const query = "select id, name from test"
+
+	var res []User
+	rows, err := db.sql.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("error: %v", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var tmp User
+		err := rows.Scan(&tmp.id, &tmp.name)
+		if err != nil {
+			return nil, fmt.Errorf("error: %v", err)
+		}
+		res = append(res, tmp)
 	}
 
 	return &res, nil
