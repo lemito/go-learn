@@ -10,8 +10,8 @@ import (
 )
 
 type User struct {
-	name string `json:"id"`
-	id   uint32 `json:"name"`
+	Name string `json:"id"`
+	Id   uint32 `json:"name"`
 }
 
 type Database struct {
@@ -54,7 +54,7 @@ func (db *Database) Flush() error {
 	}
 
 	for _, usr := range db.buffer {
-		_, err := transaction.Stmt(db.inserter).Exec(usr.id, usr.name)
+		_, err := transaction.Stmt(db.inserter).Exec(usr.Id, usr.Name)
 		if err != nil {
 			transaction.Rollback()
 			return err
@@ -85,7 +85,7 @@ func (db *Database) Get_from_id(id uint32) (*User, error) {
 	const query = "select id, name from test where id = ?"
 
 	var res User
-	err := db.sql.QueryRow(query, id).Scan(&res.id, &res.name)
+	err := db.sql.QueryRow(query, id).Scan(&res.Id, &res.Name)
 
 	if err != nil {
 		return nil, err
@@ -106,7 +106,7 @@ func (db *Database) Get_all() (*[]User, error) {
 
 	for rows.Next() {
 		var tmp User
-		err := rows.Scan(&tmp.id, &tmp.name)
+		err := rows.Scan(&tmp.Id, &tmp.Name)
 		if err != nil {
 			return nil, fmt.Errorf("error: %v", err)
 		}
