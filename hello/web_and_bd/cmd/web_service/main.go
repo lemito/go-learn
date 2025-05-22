@@ -21,11 +21,21 @@ func main() {
 	defer test_db.Close()
 
 	test := db.User{
-		Id:   0,
+		Id:   7,
 		Name: "Meow",
 	}
 
 	err = test_db.Insert(test)
+	if err != nil {
+		panic(err)
+	}
+
+	test1 := db.User{
+		Id:   5,
+		Name: "Woof",
+	}
+
+	err = test_db.Insert(test1)
 	if err != nil {
 		panic(err)
 	}
@@ -50,6 +60,18 @@ func main() {
 		}
 
 		res, err := test_db.Get_from_id(uint32(id))
+		if err != nil {
+			http.Error(w, "", http.StatusBadRequest)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(res)
+	})
+
+	http.HandleFunc("/get_all", func(w http.ResponseWriter, r *http.Request) {
+
+		res, err := test_db.Get_all()
 		if err != nil {
 			http.Error(w, "", http.StatusBadRequest)
 			return
