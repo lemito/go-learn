@@ -41,7 +41,7 @@ func CreateDb(path string) (*Database, error) {
 	res := Database{
 		sql:      db,
 		inserter: stmt,
-		buffer:   make([]User, 0, 3),
+		buffer:   make([]User, 0, 1),
 	}
 
 	return &res, nil
@@ -67,7 +67,7 @@ func (db *Database) Flush() error {
 
 func (db *Database) Insert(for_ins User) error {
 	if len(db.buffer) == cap(db.buffer) {
-		return errors.New("")
+		return errors.New("err ")
 	}
 
 	db.buffer = append(db.buffer, for_ins)
