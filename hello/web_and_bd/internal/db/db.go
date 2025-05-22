@@ -10,8 +10,8 @@ import (
 )
 
 type User struct {
-	Name string `json:"id"`
-	Id   uint32 `json:"name"`
+	Name string `json:"name"`
+	Id   uint32 `json:"id"`
 }
 
 type Database struct {
@@ -78,18 +78,23 @@ func (db *Database) Insert(for_ins User) error {
 		}
 	}
 
+	db.Flush()
+
 	return nil
 }
 
 func (db *Database) Get_from_id(id uint32) (*User, error) {
-	const query = "select id, name from test where id = ?"
+	const query = "SELECT id, name FROM test WHERE id = ?"
 
 	var res User
 	err := db.sql.QueryRow(query, id).Scan(&res.Id, &res.Name)
 
 	if err != nil {
+		log.Printf("Err in Get_from_id")
 		return nil, err
 	}
+
+	log.Printf("Was Inserted %s", res.Name)
 
 	return &res, nil
 }
