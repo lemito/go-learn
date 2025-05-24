@@ -32,7 +32,7 @@ func CreateDb(path string) (*Database, error) {
 		return nil, err
 	}
 
-	stmt, err := db.Prepare("insert into test (id, name) values (?, ?)")
+	stmt, err := db.Prepare("insert into test (name) values (?)")
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -41,7 +41,7 @@ func CreateDb(path string) (*Database, error) {
 	res := Database{
 		sql:      db,
 		inserter: stmt,
-		buffer:   make([]User, 0, 1),
+		buffer:   make([]User, 0, 3),
 	}
 
 	return &res, nil
@@ -54,7 +54,7 @@ func (db *Database) Flush() error {
 	}
 
 	for _, usr := range db.buffer {
-		_, err := transaction.Stmt(db.inserter).Exec(usr.Id, usr.Name)
+		_, err := transaction.Stmt(db.inserter).Exec(usr.Name)
 		if err != nil {
 			transaction.Rollback()
 			return err
@@ -78,12 +78,17 @@ func (db *Database) Insert(for_ins User) error {
 		}
 	}
 
-	db.Flush()
-
 	return nil
 }
 
 func (db *Database) Get_from_id(id uint32) (*User, error) {
+	if len(db.buffer) != 0 {
+		err := db.Flush()
+		if err != nil {
+			return nil, fmt.Errorf("Flush before getting error %v", err)
+		}
+	}
+
 	const query = "SELECT id, name FROM test WHERE id = ?"
 
 	var res User
@@ -100,6 +105,13 @@ func (db *Database) Get_from_id(id uint32) (*User, error) {
 }
 
 func (db *Database) Get_all() (*[]User, error) {
+	if len(db.buffer) != 0 {
+		err := db.Flush()
+		if err != nil {
+			return nil, fmt.Errorf("Flush before getting error %v", err)
+		}
+	}
+
 	const query = "select id, name from test"
 
 	var res []User
